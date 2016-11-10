@@ -2,18 +2,28 @@
 using namespace std;
 #include<string>
 #include<vector>
+#include<stack>
 
-struct Element {
-  string name;
-  string value;
-  vector<Element> children;
-};
+#include"Element.h"
 
 class XMLParse {
 public:
-  XMLParse(string inputFile);
+  XMLParse(const string inputFile);
 
-  Element parse();
+  Element& parse();
+
+  void setInputFile(const string fileName);
+
+  string getInputFile() const;
+
+
 private:
   string inputFile;
+  stack<string> verificationStack;
+
+  bool verifyIdentifier(const string input) const;
+
+  bool verifyTag(string input);
+
+  bool isOpenTag(const string input) const;
 };
