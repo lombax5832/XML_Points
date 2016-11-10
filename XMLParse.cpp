@@ -34,16 +34,17 @@ Element& XMLParse::parse() {
 
       if (openBracketPos == string::npos) {
         if (currentLine[i] == '<') {
-          openBracketPos = i;
-        }
-      } 
-      else if (closeBracketPos == string::npos) {
-        if (currentLine[i] == '>') {
-          closeBracketPos = i;
-        }
-      }
-      else {
 
+          openBracketPos = i;
+          for (; i < currentLine.length(); i++) {
+            if (currentLine[i] == '>') {
+              closeBracketPos = i;
+              break;
+            }
+          }
+        } else if (currentLine[i] != ' ') {
+
+        }
       }
 
       if ((openBracketPos != string::npos) && (closeBracketPos != string::npos)) {
