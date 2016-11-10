@@ -11,7 +11,9 @@ struct Element {
 
 class XMLParse {
 public:
+  XMLParse(string inputFile);
 
+  Element parse();
 private:
-
+  string inputFile;
 };
