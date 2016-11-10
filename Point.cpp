@@ -7,6 +7,11 @@ Point::Point(double xCoord, double yCoord) {
   setY(yCoord);
 }
 
+Point::Point(const Point & other) {
+  setX(other.getX());
+  setY(other.getY());
+}
+
 double Point::distanceTo(const Point point) const {
   return sqrt((getX() - point.getX())*(getX() - point.getX()) - (getY() - point.getY())*(getY() - point.getY()));
 }

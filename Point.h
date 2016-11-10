@@ -2,6 +2,8 @@ class Point {
 public:
   Point(double xCoord = 0.0, double yCoord = 0.0);
 
+  Point(const Point& other);
+
   double distanceTo(const Point point) const;
 
   double getX() const;

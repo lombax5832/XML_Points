@@ -3,15 +3,14 @@
 #include<iostream>
 #include<fstream>
 #include<string>
+#include<sstream>
+#include<iomanip>
 
 XMLParse::XMLParse(const string inputFile) {
   setInputFile(inputFile);
 }
 
-Element& XMLParse::parse() {
-  Element body;
-  Element* elementParent = &body;
-  Element* currentElement;
+void XMLParse::parse() {
 
   ifstream input(inputFile);
 
@@ -24,38 +23,68 @@ Element& XMLParse::parse() {
   // Temporary storage for loop
   size_t openBracketPos = string::npos;
   size_t closeBracketPos = string::npos;
-  size_t currentPos = 0;
+  bool foundPoint = false;
+  bool foundX = false;
+  bool foundY = false;
+  double x = 0.0;
+  double y = 0.0;
   string currentLine = "";
   string subString = "";
+  stringstream sstrm;
+  Point tempPoint;
   
   getline(input, currentLine);
   while (!input.eof()) {
-    for (int i = 0; i < currentLine.length(); i++) {
-
-      if (openBracketPos == string::npos) {
-        if (currentLine[i] == '<') {
-
-          openBracketPos = i;
-          for (; i < currentLine.length(); i++) {
-            if (currentLine[i] == '>') {
-              closeBracketPos = i;
-              break;
-            }
+    for (size_t i = 0; i < currentLine.length(); i++) {
+      if (currentLine[i] == '<') {
+        openBracketPos = i;
+        for (; i < currentLine.length(); i++) {
+          if (currentLine[i] == '>') {
+            closeBracketPos = i;
+            break;
           }
-        } else if (currentLine[i] != ' ') {
+        }
+        subString = "";// currentLine.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
+        cout << subString << endl;
+        openBracketPos = string::npos;
+        closeBracketPos = string::npos;
 
+        if (!verifyTag(subString)) {
+         // exit(1);
+        }
+
+        if (subString == TAG_POINT) {
+          foundPoint = true;
         }
       }
-
-      if ((openBracketPos != string::npos) && (closeBracketPos != string::npos)) {
-        subString = currentLine.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
-        if (!verifyTag(subString)) {
-          cout << "Tag name: " << subString << " is an invalid identifier." << endl;
-          exit(1);
+      else if ((currentLine[i] == '-') || ((currentLine[i] >= '0') && (currentLine[i] <= '9'))) {
+        openBracketPos = i;
+        for (; i < currentLine.length(); i++) {
+          if (currentLine[i] == '<' || currentLine[i] == ' ') {
+            closeBracketPos = i;
+            cout << openBracketPos << ' ' << closeBracketPos << endl;
+            break;
+          }
         }
-        if (isOpenTag(subString)) {
-          currentElement = new Element(subString);
-          elementParent->addChild(currentElement);
+        subString = currentLine.substr(openBracketPos, closeBracketPos - openBracketPos);
+        openBracketPos = string::npos;
+        closeBracketPos = string::npos;
+
+        sstrm << subString;
+        cout << subString << endl;
+        if (!foundX) {
+          sstrm >> x;
+          foundX = true;
+        } else if (!foundY) {
+          sstrm >> y;
+          tempPoint.setX(x);
+          tempPoint.setY(y);
+          pointList.push_back(tempPoint);
+          x = 0.0;
+          y = 0.0;
+          foundPoint = false;
+          foundX = false;
+          foundY = false;
         }
       }
     }
@@ -63,8 +92,6 @@ Element& XMLParse::parse() {
     openBracketPos = string::npos;
     closeBracketPos = string::npos;
   }
-
-  return body;
 }
 
 void XMLParse::setInputFile(const string fileName) {
@@ -75,8 +102,20 @@ string XMLParse::getInputFile() const {
   return inputFile;
 }
 
+void XMLParse::tabulate() const {
+  Point p;
+  for (size_t i = 0; i < pointList.size(); i++) {
+    p = pointList.at(0);
+    cout << "x = ";
+    cout << setw(6) << p.getX() << ", ";
+    cout << "y = ";
+    cout << setw(6) << p.getY() << ", ";
+    cout << endl;
+  }
+}
+
 bool XMLParse::verifyIdentifier(const string input) const {
-  for (int i = 0; i < input.length(); i++) {
+  for (size_t i = 0; i < input.length(); i++) {
     if (!((input[i] >= 'A' && input[i] <= 'Z') || 
       (input[i] >= 'a' && input[i] <= 'z') ||
       (input[i] == '_'))) {
@@ -91,7 +130,7 @@ bool XMLParse::verifyIdentifier(const string input) const {
 }
 
 bool XMLParse::verifyTag(string input) {
-  if (input[0] = '/') {
+  if (!isOpenTag(input)) {
     input = input.substr(1);
     if (verificationStack.top() == input) {
       verificationStack.pop();
