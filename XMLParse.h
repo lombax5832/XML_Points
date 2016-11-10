@@ -8,9 +8,12 @@ using namespace std;
 
 // Constants
 // XML Tags we will see
-const string TAG_POINT = "Point";
-const string TAG_X     = "x";
-const string TAG_Y     = "y";
+const string TAG_POINT       = "<Point>";
+const string TAG_POINT_CLOSE = "</Point>";
+const string TAG_X           = "<x>";
+const string TAG_X_CLOSE     = "</x>";
+const string TAG_Y           = "<y>";
+const string TAG_Y_CLOSE     = "</y>";
 
 class XMLParse {
 public:
@@ -33,5 +36,9 @@ private:
 
   bool verifyTag(string input);
 
+  string getTagName(const string input) const;
+
   bool isOpenTag(const string input) const;
+
+  void addPointToList(double x, double y);
 };

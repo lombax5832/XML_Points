@@ -5,6 +5,7 @@
 #include<string>
 #include<sstream>
 #include<iomanip>
+#include<cassert>
 
 XMLParse::XMLParse(const string inputFile) {
   setInputFile(inputFile);
@@ -21,76 +22,86 @@ void XMLParse::parse() {
   }
 
   // Temporary storage for loop
-  size_t openBracketPos = string::npos;
-  size_t closeBracketPos = string::npos;
+  string currentLine = "";
+  size_t currentPos = 0;
   bool foundPoint = false;
   bool foundX = false;
   bool foundY = false;
   double x = 0.0;
   double y = 0.0;
-  string currentLine = "";
-  string subString = "";
-  stringstream sstrm;
-  Point tempPoint;
-  
+  stringstream strm;
+
   getline(input, currentLine);
   while (!input.eof()) {
     for (size_t i = 0; i < currentLine.length(); i++) {
-      if (currentLine[i] == '<') {
-        openBracketPos = i;
-        for (; i < currentLine.length(); i++) {
-          if (currentLine[i] == '>') {
-            closeBracketPos = i;
-            break;
-          }
-        }
-        subString = "";// currentLine.substr(openBracketPos + 1, closeBracketPos - openBracketPos - 1);
-        cout << subString << endl;
-        openBracketPos = string::npos;
-        closeBracketPos = string::npos;
 
-        if (!verifyTag(subString)) {
-         // exit(1);
-        }
-
-        if (subString == TAG_POINT) {
+      if (!foundPoint) {
+        currentPos = currentLine.find(TAG_POINT, i);
+        i = currentPos + TAG_POINT.length() - 1;
+        if (currentPos != string::npos) {
           foundPoint = true;
+          if(verifyTag(TAG_POINT))
+            cout << "Got point." << endl;
+        } else {
+          break;
+        }
+      } 
+      
+      else if (!foundX) {
+        currentPos = currentLine.find(TAG_X, i);
+        i = currentPos + TAG_X.length();
+        if (currentPos != string::npos) {
+          foundX = true;
+          if (verifyTag(TAG_X)) {
+            cout << "Got X." << endl;
+          }
+          strm << currentLine.substr(i, currentLine.find(TAG_X_CLOSE, i)-i);
+          verifyTag(TAG_X_CLOSE);
+          strm >> x;
+          cout << x << endl;
+        } else {
+          break;
+        }
+      } 
+      
+      else if (!foundY) {
+        currentPos = currentLine.find(TAG_Y, i);
+        i = currentPos + TAG_Y.length();
+       // cout << currentPos << ' ' << i << endl;
+        if (currentPos != string::npos) {
+          foundY = true;
+          if (verifyTag(TAG_Y)) {
+            cout << "Got Y." << endl;
+          }
+          strm << currentLine.substr(i, currentLine.find(TAG_Y_CLOSE, i)-i);
+          verifyTag(TAG_Y_CLOSE);
+          strm >> y;
+          cout << y << endl;
+        } else {
+          break;
         }
       }
-      else if ((currentLine[i] == '-') || ((currentLine[i] >= '0') && (currentLine[i] <= '9'))) {
-        openBracketPos = i;
-        for (; i < currentLine.length(); i++) {
-          if (currentLine[i] == '<' || currentLine[i] == ' ') {
-            closeBracketPos = i;
-            cout << openBracketPos << ' ' << closeBracketPos << endl;
-            break;
+      
+      else if (foundY) {
+        currentPos = currentLine.find(TAG_POINT_CLOSE, i);
+        i = currentPos + TAG_POINT_CLOSE.length() - 1;
+        if (currentPos != string::npos) {
+          //foundPoint = true;
+          if (verifyTag(TAG_POINT_CLOSE)) {
+            cout << "Got point close." << endl;
+            addPointToList(x,y);
+            foundPoint = false;
+            foundX = false;
+            foundY = false;
+            x = 0.0;
+            y = 0.0;
           }
-        }
-        subString = currentLine.substr(openBracketPos, closeBracketPos - openBracketPos);
-        openBracketPos = string::npos;
-        closeBracketPos = string::npos;
-
-        sstrm << subString;
-        cout << subString << endl;
-        if (!foundX) {
-          sstrm >> x;
-          foundX = true;
-        } else if (!foundY) {
-          sstrm >> y;
-          tempPoint.setX(x);
-          tempPoint.setY(y);
-          pointList.push_back(tempPoint);
-          x = 0.0;
-          y = 0.0;
-          foundPoint = false;
-          foundX = false;
-          foundY = false;
+        } else {
+          break;
         }
       }
     }
     getline(input, currentLine);
-    openBracketPos = string::npos;
-    closeBracketPos = string::npos;
   }
 }
 
@@ -103,20 +114,18 @@ string XMLParse::getInputFile() const {
 }
 
 void XMLParse::tabulate() const {
-  Point p;
   for (size_t i = 0; i < pointList.size(); i++) {
-    p = pointList.at(0);
     cout << "x = ";
-    cout << setw(6) << p.getX() << ", ";
+    cout << setw(6) << pointList.at(i).getX() << ", ";
     cout << "y = ";
-    cout << setw(6) << p.getY() << ", ";
+    cout << setw(6) << pointList.at(i).getY() << ", ";
     cout << endl;
   }
 }
 
 bool XMLParse::verifyIdentifier(const string input) const {
   for (size_t i = 0; i < input.length(); i++) {
-    if (!((input[i] >= 'A' && input[i] <= 'Z') || 
+    if (((input[i] >= 'A' && input[i] <= 'Z') ||
       (input[i] >= 'a' && input[i] <= 'z') ||
       (input[i] == '_'))) {
       continue;
@@ -130,23 +139,39 @@ bool XMLParse::verifyIdentifier(const string input) const {
 }
 
 bool XMLParse::verifyTag(string input) {
-  if (!isOpenTag(input)) {
-    input = input.substr(1);
-    if (verificationStack.top() == input) {
-      verificationStack.pop();
-      return true;
+  if (isOpenTag(input)) {
+    if (!verifyIdentifier(getTagName(input))) {
+      return false;
     }
-    return false;
-  }
-  else {
-    if (verifyIdentifier(input)) {
-      verificationStack.push(input);
+    verificationStack.push(getTagName(input));
+    //cout << verificationStack.top() << " on stack" << endl;
+    return true;
+  } else {
+    if (!verificationStack.empty() && verificationStack.top() == getTagName(input)) {
+      verificationStack.pop();
+      if (!verificationStack.empty()) {
+       // cout << verificationStack.top() << " on stack" << endl;
+      }
+      else
+        cout << "stack empty" << endl;
       return true;
     }
     return false;
   }
 }
 
+string XMLParse::getTagName(const string input) const {
+  if (isOpenTag(input)) {
+    return input.substr(1, input.length() - 2);
+  }
+  return input.substr(2, input.length() - 3);
+}
+
 bool XMLParse::isOpenTag(const string input) const {
-  return input[0] != '/';
+  return input.substr(0, 2) != "</";
+}
+
+void XMLParse::addPointToList(double x, double y) {
+  Point toAdd(x, y);
+  pointList.push_back(toAdd);
 }
