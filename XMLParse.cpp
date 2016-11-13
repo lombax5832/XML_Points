@@ -11,7 +11,7 @@ XMLParse::XMLParse(const string inputFile) {
   setInputFile(inputFile);
 }
 
-void XMLParse::parse() {
+vector<Point>& XMLParse::parse() {
 
   ifstream input(inputFile);
 
@@ -150,6 +150,7 @@ void XMLParse::parse() {
       }
     }
   }
+  return pointList;
 }
 
 void XMLParse::setInputFile(const string fileName) {

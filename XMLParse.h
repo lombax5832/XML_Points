@@ -19,7 +19,7 @@ class XMLParse {
 public:
   XMLParse(const string inputFile = "input.txt");
 
-  void parse();
+  vector<Point>& parse();
 
   void setInputFile(const string fileName);
 
