@@ -17,7 +17,6 @@ double PolyLine::length() const {
   Element lastPoint = pntList.begin();
   for (Element it = pntList.begin(); it != pntList.end(); it++) {
     if (!(lastPoint == it)) {
-      cout << it->distanceTo(*lastPoint) << endl;
       currentLength += it->distanceTo(*lastPoint);
     }
     lastPoint = it;
@@ -43,6 +42,7 @@ void PolyLine::remove(int pos) {
   for (int i = 0; it != pntList.end(); it++, i++) {
     if (i == pos) {
       pntList.erase(it);
+      break;
     }
   }
 }

@@ -8,8 +8,8 @@ using namespace std;
 
 // Constants
 // XML Tags we will see
-const string TAG_POINT       = "<Point>";
-const string TAG_POINT_CLOSE = "</Point>";
+const string TAG_POINT       = "<point>";
+const string TAG_POINT_CLOSE = "</point>";
 const string TAG_X           = "<x>";
 const string TAG_X_CLOSE     = "</x>";
 const string TAG_Y           = "<y>";
@@ -31,6 +31,8 @@ private:
   string inputFile;
   list<Point> pointList;
   stack<string> verificationStack;
+
+  void stringToLower(string& input) const;
 
   bool findTag(size_t& currentPos, size_t& i, string& currentLine, const string& tagToFind);
 

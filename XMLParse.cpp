@@ -34,6 +34,7 @@ list<Point>& XMLParse::parse() {
   
   while (!input.eof()) {
     getline(input, currentLine);
+    stringToLower(currentLine);
     for (size_t i = 0; i < currentLine.length(); i++) {
       //cout << i << endl;
 
@@ -110,6 +111,14 @@ void XMLParse::tabulate() const {
     cout << "y = ";
     cout << setw(6) << it->getY();
     cout << endl;
+  }
+}
+
+void XMLParse::stringToLower(string& input) const {
+  for (int i = 0; i < input.length(); i++) {
+    if (input[i] >= 'A' && input[i] <= 'Z') {
+      input[i] += 'a' - 'A';
+    }
   }
 }
 

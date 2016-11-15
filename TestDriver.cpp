@@ -4,8 +4,70 @@ using namespace std;
 #include"PolyLine.h"
 
 int main() {
-  PolyLine polyLine;
-  polyLine.show();
-  cout << polyLine.length() << endl;
+  PolyLine* polyLine = new PolyLine();
+  polyLine->show();
+  int selector = 1;
+  int nodePos = 0;
+  double newX = 0.0;
+  double newY = 0.0;
+  while(true){
+    switch (selector) {
+      //Terminate Program
+    case 0:
+      return 0;
+      break;
+      //Create new PolyLine
+    case 1:
+      delete polyLine;
+      polyLine = new PolyLine();
+      break;
+      //Calculate length
+    case 2:
+      cout << "Length: " << polyLine->length() << endl;
+      break;
+      //Insert new node
+    case 3:
+      cout << "Enter position, x, and y separated by whitespace characters: " << endl;
+      cin >> nodePos >> newX >> newY;
+      polyLine->insert(nodePos, Point(newX, newY));
+      break;
+      //Remove node
+    case 4:
+      cout << "Enter position: " << endl;
+      cin >> nodePos;
+      polyLine->remove(nodePos);
+      break;
+      //Show Object
+    case 5:
+      polyLine->show();
+      break;
+      //Show num of points
+    case 6:
+      cout << "Number of points: " << polyLine->size() << endl;
+      break;
+      //Save to file
+    case 7:
+      polyLine->store();
+      break;
+    default:
+      break;
+    }
+    cout << "Commands:" << endl;
+    cout << "0: Terminate Program" << endl;
+    cout << "1: Create new PolyLine Object" << endl;
+    cout << "2: Print the length of all lines connecting subsequent points" << endl;
+    cout << "3: Insert a new point" << endl;
+    cout << "4: Remove a point" << endl;
+    cout << "5: Print all points" << endl;
+    cout << "6: Print number of points" << endl;
+    cout << "7: Store object in outp.txt" << endl;
+    cout << "Enter a command number: ";
+    if (!(cin >> selector)) {
+      selector = 8;
+    }
+    cout << endl;
+    cin.clear();
+    cin.ignore(string::npos, '\n');
+  }
   return 0;
 }
