@@ -13,7 +13,7 @@ Point::Point(const Point & other) {
 }
 
 double Point::distanceTo(const Point point) const {
-  return sqrt((getX() - point.getX())*(getX() - point.getX()) - (getY() - point.getY())*(getY() - point.getY()));
+  return sqrt(pow(getX() - point.getX(), 2.0) + pow(getY() - point.getY(), 2.0));
 }
 
 double Point::getX() const {

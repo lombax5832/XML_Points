@@ -1,3 +1,5 @@
+#pragma once
+
 class Point {
 public:
   Point(double xCoord = 0.0, double yCoord = 0.0);

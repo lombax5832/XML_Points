@@ -17,7 +17,7 @@ const string TAG_Y_CLOSE     = "</y>";
 
 class XMLParse {
 public:
-  XMLParse(const string inputFile = "input.txt");
+  XMLParse(const string inputFile = "inp.txt");
 
   list<Point>& parse();
 

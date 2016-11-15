@@ -1,11 +1,11 @@
 using namespace std;
 #include<iostream>
 
-#include"XMLParse.h"
+#include"PolyLine.h"
 
 int main() {
-  XMLParse parser;
-  parser.parse();
-  parser.tabulate();
+  PolyLine polyLine;
+  polyLine.show();
+  cout << polyLine.length() << endl;
   return 0;
 }
