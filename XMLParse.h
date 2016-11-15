@@ -1,7 +1,7 @@
 #pragma once
 using namespace std;
 #include<string>
-#include<vector>
+#include<list>
 #include<stack>
 
 #include"Point.h"
@@ -19,7 +19,7 @@ class XMLParse {
 public:
   XMLParse(const string inputFile = "input.txt");
 
-  vector<Point>& parse();
+  list<Point>& parse();
 
   void setInputFile(const string fileName);
 
@@ -29,7 +29,7 @@ public:
 
 private:
   string inputFile;
-  vector<Point> pointList;
+  list<Point> pointList;
   stack<string> verificationStack;
 
   bool findTag(size_t& currentPos, size_t& i, string& currentLine, const string& tagToFind);

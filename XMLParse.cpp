@@ -5,13 +5,12 @@
 #include<string>
 #include<sstream>
 #include<iomanip>
-#include<cassert>
 
 XMLParse::XMLParse(const string inputFile) {
   setInputFile(inputFile);
 }
 
-vector<Point>& XMLParse::parse() {
+list<Point>& XMLParse::parse() {
 
   ifstream input(inputFile);
 
@@ -104,11 +103,12 @@ string XMLParse::getInputFile() const {
 }
 
 void XMLParse::tabulate() const {
-  for (size_t i = 0; i < pointList.size(); i++) {
+  typedef list<Point> PointList;
+  for (PointList::const_iterator it = pointList.begin(); it != pointList.end(); ++it) {
     cout << "x = ";
-    cout << setw(6) << pointList.at(i).getX() << ", ";
+    cout << setw(6) << it->getX() << ", ";
     cout << "y = ";
-    cout << setw(6) << pointList.at(i).getY();
+    cout << setw(6) << it->getY();
     cout << endl;
   }
 }
