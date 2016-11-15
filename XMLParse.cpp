@@ -42,94 +42,33 @@ vector<Point>& XMLParse::parse() {
         if (findTag(currentPos, i, currentLine, TAG_POINT)) {
           foundPoint = true;
         }
-        /*currentPos = currentLine.find(TAG_POINT, i);
-        if (currentPos != currentLine.find('<', i)) {
-          cout << "Invalid Tag Encountered" << endl;
-          cout << currentPos << ' ' << currentLine.find('<', i) << endl;
-          exit(1);
-        }
-        i = currentPos + TAG_POINT.length();
-        if (currentPos != string::npos) {
-          foundPoint = true;
-          if (!verifyTag(TAG_POINT)) {
-            cout << "Invalid Tag Encountered" << endl;
-            exit(1);
-          }
-        } else {
-          break;
-        }*/
       } 
       
       else if (!foundX) {
-        currentPos = currentLine.find(TAG_X, i);
-        if (currentPos != currentLine.find('<', i)) {
-          cout << "Invalid Tag Encountered" << endl;
-          cout << currentPos << ' ' << currentLine.find('<', i) << endl;
-          exit(1);
-        }
-        i = currentPos + TAG_X.length();
-        if (currentPos != string::npos) {
+        if (findTag(currentPos, i, currentLine, TAG_X)) {
           foundX = true;
-          if (!verifyTag(TAG_X)) {
-            cout << "Invalid Tag Encountered" << endl;
-            exit(1);
-          }
           strm << currentLine.substr(i, currentLine.find(TAG_X_CLOSE, i) - i);
           strm >> x;
-        } else {
-          break;
         }
       } 
 
       else if (foundX && !foundXClose) {
-        currentPos = currentLine.find(TAG_X_CLOSE, i);
-        i = currentPos + TAG_X_CLOSE.length();
-        if (currentPos != string::npos) {
+        if (findTag(currentPos, i, currentLine, TAG_X_CLOSE)) {
           foundXClose = true;
-          if (!verifyTag(TAG_X_CLOSE)) {
-            cout << "Invalid Tag Encountered" << endl;
-            cout << currentPos << ' ' << currentLine.find('<', i) << ' ' << i << endl;
-            exit(1);
-          }
-        } else {
-          break;
         }
       }
       
       else if (!foundY) {
-        currentPos = currentLine.find(TAG_Y, i);
-        if (currentPos != currentLine.find('<', i)) {
-          cout << "Invalid Tag Encountered" << endl;
-          cout << currentPos << ' ' << currentLine.find('<', i) << endl;
-          exit(1);
-        }
-        i = currentPos + TAG_Y.length();
-        if (currentPos != string::npos) {
+        if (findTag(currentPos, i, currentLine, TAG_Y)) {
           foundY = true;
-          if (!verifyTag(TAG_Y)) {
-            cout << "Invalid Tag Encountered" << endl;
-            exit(1);
-          }
-          strm << currentLine.substr(i, currentLine.find(TAG_Y_CLOSE, i)-i);
-          //verifyTag(TAG_Y_CLOSE);
+          strm << currentLine.substr(i, currentLine.find(TAG_Y_CLOSE, i) - i);
           strm >> y;
-        } else {
-          break;
         }
       }
 
       else if (foundY && !foundYClose) {
-        currentPos = currentLine.find(TAG_Y_CLOSE, i);
-        i = currentPos + TAG_Y_CLOSE.length();
-        if (currentPos != string::npos) {
+        if (findTag(currentPos, i, currentLine, TAG_Y_CLOSE)) {
           foundYClose = true;
-          if (!verifyTag(TAG_Y_CLOSE)) {
-            cout << "Invalid Tag Encountered" << endl;
-            cout << currentPos << ' ' << currentLine.find('<', i) << ' ' << i << endl;
-            exit(1);
-          }
-        } else {
-          break;
         }
       }
       
@@ -187,6 +126,7 @@ bool XMLParse::findTag(size_t& currentPos, size_t& i, string& currentLine, const
       cout << "Invalid Tag Encountered" << endl;
       exit(1);
     }
+
     return true;
   } else {
     return false;
