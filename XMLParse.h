@@ -32,6 +32,8 @@ private:
   vector<Point> pointList;
   stack<string> verificationStack;
 
+  bool findTag(size_t& currentPos, size_t& i, string& currentLine, const string& tagToFind);
+
   bool verifyIdentifier(const string input) const;
 
   bool verifyTag(string input);
