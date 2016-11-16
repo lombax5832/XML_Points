@@ -3,10 +3,12 @@ using namespace std;
 
 #include"PolyLine.h"
 
+const string INPUT_FILE = "inp.txt";
+
 int main() {
-  PolyLine* polyLine = new PolyLine();
-  polyLine->show();
-  int selector = 1;
+  PolyLine* polyLine = new PolyLine(INPUT_FILE);
+  //polyLine->show();
+  int selector = 5;
   int nodePos = 0;
   double newX = 0.0;
   double newY = 0.0;

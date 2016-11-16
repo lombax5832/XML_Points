@@ -12,6 +12,10 @@ XMLParse::XMLParse(const string inputFile) {
 
 list<Point>& XMLParse::parse() {
 
+  if (inputFile == "") {
+    return pointList;
+  }
+
   ifstream input(inputFile);
 
   // Prints an error if the file could not be opened for input
@@ -92,6 +96,7 @@ list<Point>& XMLParse::parse() {
       }
     }
   }
+  input.close();
   return pointList;
 }
 

@@ -8,7 +8,7 @@ using namespace std;
 
 class PolyLine {
 public:
-  PolyLine(string inputFile = "inp.txt", string outputFile = "outp.txt");
+  PolyLine(string inputFile = "", string outputFile = "outp.txt");
   
   double length() const;
   int size() const;

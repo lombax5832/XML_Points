@@ -4,6 +4,7 @@
 #include<iostream>
 #include<iomanip>
 #include<fstream>
+
 PolyLine::PolyLine(string inputFile, string outFile) {
   outputFile = outFile;
   XMLParse parser(inputFile);
@@ -32,9 +33,10 @@ void PolyLine::insert(int pos, Point toInsert) {
   list<Point>::const_iterator it = pntList.begin();
   for (int i = 0; it != pntList.end(); it++, i++) {
     if (i == pos) {
-      pntList.insert(it, toInsert);
+      break;
     }
   }
+  pntList.insert(it, toInsert);
 }
 
 void PolyLine::remove(int pos) {
@@ -53,7 +55,10 @@ void PolyLine::show() const {
 
 void PolyLine::store() const {
   ofstream strm(outputFile);
-  toOStream(strm);
+  for (list<Point>::const_iterator it = pntList.begin(); it != pntList.end(); it++) {
+    strm << "<Point> <x> " << setw(3) << it->getX() << " </x>";
+    strm << " <y> " << setw(3) << it->getY() << " </y> </Point>\n";
+  }
 }
 
 void PolyLine::toOStream(ostream & ostrm) const {
