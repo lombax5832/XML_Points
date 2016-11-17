@@ -7,8 +7,8 @@ const string INPUT_FILE = "inp.txt";
 
 int main() {
   PolyLine* polyLine = new PolyLine(INPUT_FILE);
-  //polyLine->show();
-  int selector = 5;
+  int selector = 5;//Defualt to polyLine->show();
+  //Values used for removing/inserting a new point
   int nodePos = 0;
   double afterX = 0.0;
   double afterY = 0.0;
@@ -62,6 +62,7 @@ int main() {
     default:
       break;
     }
+    //Print menu options
     cout << "Commands:" << endl;
     cout << "0: Terminate Program" << endl;
     cout << "1: Create new PolyLine Object" << endl;

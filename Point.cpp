@@ -12,7 +12,7 @@ Point::Point(const Point & other) {
   setY(other.getY());
 }
 
-double Point::distanceTo(const Point point) const {
+double Point::distanceTo(const Point& point) const {
   return sqrt(pow(getX() - point.getX(), 2.0) + pow(getY() - point.getY(), 2.0));
 }
 
@@ -25,7 +25,7 @@ double Point::getY() const {
 }
 
 bool Point::operator==(const Point & compTo) const {
-  return ((getX()==compTo.getX())&&(getY() == compTo.getY()));
+  return ((getX() - compTo.getX() <= 1e-3) && (getY() - compTo.getY() <= 1e-3));
 }
 
 void Point::setX(double xCoord) {
