@@ -63,6 +63,8 @@ void PolyLine::show() const {
   }
 }
 
+//Stores in format:
+//<Point> <x> xxx </x> <y> yyy </y> </Point>
 void PolyLine::store() const {
   ofstream strm(outputFile);
   for (list<Point>::const_iterator it = pntList.begin(); it != pntList.end(); it++) {

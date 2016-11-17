@@ -20,8 +20,9 @@ list<Point>& XMLParse::parse() {
 
   // Prints an error if the file could not be opened for input
   if (!input) {
-    cout << "Could not open file " << inputFile << " for input" << endl;
-    exit(1);
+    cout << "Could not open file " << getInputFile() << " for input" << endl;
+    cout << "Defaulting to empty list of points" << endl;
+    return pointList;
   }
 
   // Temporary storage for loop
@@ -35,33 +36,36 @@ list<Point>& XMLParse::parse() {
   double x = 0.0;
   double y = 0.0;
   stringstream strm;
-  
+
   while (!input.eof()) {
     getline(input, currentLine);
     stringToLower(currentLine);
     for (size_t i = 0; i < currentLine.length(); i++) {
-      //cout << i << endl;
 
+      //look for <point>
       if (!foundPoint) {
         if (findTag(currentPos, i, currentLine, TAG_POINT)) {
           foundPoint = true;
         }
-      } 
-      
+      }
+
+      //look for <x> and get value
       else if (!foundX) {
         if (findTag(currentPos, i, currentLine, TAG_X)) {
           foundX = true;
           strm << currentLine.substr(i, currentLine.find(TAG_X_CLOSE, i) - i);
           strm >> x;
         }
-      } 
+      }
 
+      //look for </x>
       else if (foundX && !foundXClose) {
         if (findTag(currentPos, i, currentLine, TAG_X_CLOSE)) {
           foundXClose = true;
         }
       }
-      
+
+      //look for <y>
       else if (!foundY) {
         if (findTag(currentPos, i, currentLine, TAG_Y)) {
           foundY = true;
@@ -70,18 +74,20 @@ list<Point>& XMLParse::parse() {
         }
       }
 
+      //look for </y> 
       else if (foundY && !foundYClose) {
         if (findTag(currentPos, i, currentLine, TAG_Y_CLOSE)) {
           foundYClose = true;
         }
       }
-      
+
+      //look for </point>, then reset for next <point>
       else if (foundYClose) {
         currentPos = currentLine.find(TAG_POINT_CLOSE, i);
         i = currentPos + TAG_POINT_CLOSE.length();
         if (currentPos != string::npos) {
           if (verifyTag(TAG_POINT_CLOSE)) {
-            addPointToList(x,y);
+            addPointToList(Point(x, y));
             foundPoint = false;
             foundX = false;
             foundXClose = false;
@@ -108,17 +114,6 @@ string XMLParse::getInputFile() const {
   return inputFile;
 }
 
-void XMLParse::tabulate() const {
-  typedef list<Point> PointList;
-  for (PointList::const_iterator it = pointList.begin(); it != pointList.end(); ++it) {
-    cout << "x = ";
-    cout << setw(6) << it->getX() << ", ";
-    cout << "y = ";
-    cout << setw(6) << it->getY();
-    cout << endl;
-  }
-}
-
 void XMLParse::stringToLower(string& input) const {
   for (int i = 0; i < input.length(); i++) {
     if (input[i] >= 'A' && input[i] <= 'Z') {
@@ -127,7 +122,7 @@ void XMLParse::stringToLower(string& input) const {
   }
 }
 
-bool XMLParse::findTag(size_t& currentPos, size_t& i, string& currentLine, const string& tagToFind) {
+bool XMLParse::findTag(size_t& currentPos, size_t& i, const string& currentLine, const string& tagToFind) {
   currentPos = currentLine.find(tagToFind, i);
   if (currentPos != currentLine.find('<', i)) {
     cout << "Invalid Tag Encountered" << endl;
@@ -162,21 +157,17 @@ bool XMLParse::verifyIdentifier(const string input) const {
   return true;
 }
 
-bool XMLParse::verifyTag(string input) {
+bool XMLParse::verifyTag(const string input) {
   if (isOpenTag(input)) {
     if (!verifyIdentifier(getTagName(input))) {
       return false;
     }
     verificationStack.push(getTagName(input));
-    //cout << verificationStack.top() << " on stack" << endl;
-    //cout << verificationStack.size() << " on stack" << endl;
     return true;
   } else {
     if (!verificationStack.empty() && (verificationStack.top() == getTagName(input))) {
       verificationStack.pop();
       if (!verificationStack.empty()) {
-        //cout << verificationStack.top() << " on stack" << endl;
-        //cout << verificationStack.size() << " on stack" << endl;
       }
       return true;
     }
@@ -195,7 +186,6 @@ bool XMLParse::isOpenTag(const string input) const {
   return input.substr(0, 2) != "</";
 }
 
-void XMLParse::addPointToList(double x, double y) {
-  Point toAdd(x, y);
-  pointList.push_back(toAdd);
+void XMLParse::addPointToList(Point& point) {
+  pointList.push_back(point);
 }
