@@ -10,6 +10,8 @@ int main() {
   //polyLine->show();
   int selector = 5;
   int nodePos = 0;
+  double afterX = 0.0;
+  double afterY = 0.0;
   double newX = 0.0;
   double newY = 0.0;
   while(true){
@@ -29,9 +31,15 @@ int main() {
       break;
       //Insert new node
     case 3:
-      cout << "Enter position, x, and y separated by whitespace characters: " << endl;
-      cin >> nodePos >> newX >> newY;
-      polyLine->insert(nodePos, Point(newX, newY));
+      if (polyLine->size() > 0) {
+        cout << "Enter x and y of a new point followed by the x and y of an existing point: " << endl;
+        cin >> newX >> newY >> afterX >> afterY;
+        polyLine->insert(Point(newX, newY), Point(afterX, afterY));
+      } else {
+        cout << "Enter x and y of a new point: " << endl;
+        cin >> newX >> newY;
+        polyLine->insert(Point(newX, newY));
+      }
       break;
       //Remove node
     case 4:
@@ -58,7 +66,7 @@ int main() {
     cout << "0: Terminate Program" << endl;
     cout << "1: Create new PolyLine Object" << endl;
     cout << "2: Print the length of all lines connecting subsequent points" << endl;
-    cout << "3: Insert a new point" << endl;
+    cout << "3: Insert a new point after an existing given point" << endl;
     cout << "4: Remove a point" << endl;
     cout << "5: Print all points" << endl;
     cout << "6: Print number of points" << endl;

@@ -24,6 +24,10 @@ double Point::getY() const {
   return y;
 }
 
+bool Point::operator==(const Point & compTo) const {
+  return ((getX()==compTo.getX())&&(getY() == compTo.getY()));
+}
+
 void Point::setX(double xCoord) {
   x = xCoord;
 }

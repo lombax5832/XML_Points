@@ -11,6 +11,8 @@ public:
   double getX() const;
   double getY() const;
 
+  bool operator==(const Point& compTo) const;
+
   void setX(double xCoord);
   void setY(double yCoord);
 private:
