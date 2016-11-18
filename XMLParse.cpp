@@ -39,8 +39,10 @@ list<Point>& XMLParse::parse() {
 
   while (!input.eof()) {
     getline(input, currentLine);
+    stringCutSpaces(currentLine);
     stringToLower(currentLine);
-    for (size_t i = 0; i < currentLine.length(); i++) {
+    size_t i = 0;
+    while(i < currentLine.length()) {
 
       //look for <point>
       if (!foundPoint) {
@@ -53,7 +55,7 @@ list<Point>& XMLParse::parse() {
       else if (!foundX) {
         if (findTag(currentPos, i, currentLine, TAG_X)) {
           foundX = true;
-          strm << currentLine.substr(i, currentLine.find(TAG_X_CLOSE, i) - i);
+          strm << currentLine.substr(i, currentLine.find(TAG_X_CLOSE, i) - i) + " ";
           strm >> x;
         }
       }
@@ -69,7 +71,7 @@ list<Point>& XMLParse::parse() {
       else if (!foundY) {
         if (findTag(currentPos, i, currentLine, TAG_Y)) {
           foundY = true;
-          strm << currentLine.substr(i, currentLine.find(TAG_Y_CLOSE, i) - i);
+          strm << currentLine.substr(i, currentLine.find(TAG_Y_CLOSE, i) - i) + " ";
           strm >> y;
         }
       }
@@ -83,22 +85,18 @@ list<Point>& XMLParse::parse() {
 
       //look for </point>, then reset for next <point>
       else if (foundYClose) {
-        currentPos = currentLine.find(TAG_POINT_CLOSE, i);
-        i = currentPos + TAG_POINT_CLOSE.length();
-        if (currentPos != string::npos) {
-          if (verifyTag(TAG_POINT_CLOSE)) {
-            addPointToList(Point(x, y));
-            foundPoint = false;
-            foundX = false;
-            foundXClose = false;
-            foundY = false;
-            foundYClose = false;
-            x = 0.0;
-            y = 0.0;
-          }
-        } else {
-          break;
+        if (findTag(currentPos, i, currentLine, TAG_POINT_CLOSE)) {
+          addPointToList(Point(x, y));
+          foundPoint = false;
+          foundX = false;
+          foundXClose = false;
+          foundY = false;
+          foundYClose = false;
+          x = 0.0;
+          y = 0.0;
         }
+      } else {
+        break;
       }
     }
   }
@@ -115,21 +113,32 @@ string XMLParse::getInputFile() const {
 }
 
 void XMLParse::stringToLower(string& input) const {
-  for (int i = 0; i < input.length(); i++) {
+  for (size_t i = 0; i < input.length(); i++) {
     if (input[i] >= 'A' && input[i] <= 'Z') {
       input[i] += 'a' - 'A';
     }
   }
 }
 
+void XMLParse::stringCutSpaces(string & input) const {
+  size_t lastNonSpace = 0;
+  for (size_t i = 0; i < input.length(); i++) {
+    if (input[i] != ' ') {
+      lastNonSpace = i + 1;
+    }
+  }
+  input = input.substr(0, lastNonSpace);
+}
+
 bool XMLParse::findTag(size_t& currentPos, size_t& i, const string& currentLine, const string& tagToFind) {
   currentPos = currentLine.find(tagToFind, i);
   if (currentPos != currentLine.find('<', i)) {
     cout << "Invalid Tag Encountered" << endl;
-    cout << currentPos << ' ' << currentLine.find('<', i) << endl;
+    //cout << tagToFind << ' ' << i << ' ' << currentPos << ' ' << currentLine.find('<', i) << endl;
     exit(1);
   }
   i = currentPos + tagToFind.length();
+  //cout << tagToFind << ' ' << i << ' ' << currentPos << ' ' << currentLine.find('<', i) << endl;
   if (currentPos != string::npos) {
     if (!verifyTag(tagToFind)) {
       cout << "Invalid Tag Encountered" << endl;

@@ -65,6 +65,13 @@ private:
   void stringToLower(string& input) const;
 
   /*
+    Purpose: Remove spaces from string
+    Pre: Valid string is passed
+    Post: input is changed to have all spaces removed
+  */
+  void stringCutSpaces(string& input) const;
+
+  /*
     Purpose: Helper function for parse() used to find the next tag
     Pre: Used in a loop to make sure the next tag is what we expect
     Post: currentPos and i are modified during this function's execution
