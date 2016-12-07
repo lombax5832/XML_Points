@@ -82,7 +82,8 @@ private:
       &currentLine  = line that is being checked
       &tagToFind    = tag we are expected to see
   */
-  bool findTag(size_t& currentPos, size_t& i, const string& currentLine, const string& tagToFind);
+  bool findTag(size_t& currentPos, size_t& i, 
+    const string& currentLine, const string& tagToFind);
 
   /*
     Purpose: Verifies that an identifier's name is valid

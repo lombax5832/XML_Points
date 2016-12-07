@@ -32,7 +32,8 @@ int main() {
       //Insert new node
     case 3:
       if (polyLine->size() > 0) {
-        cout << "Enter x and y of a new point followed by the x and y of an existing point: " << endl;
+        cout << "Enter x and y of a new point followed by the x and y" 
+          << " of an existing point: " << endl;
         cin >> newX >> newY >> afterX >> afterY;
         polyLine->insert(Point(newX, newY), Point(afterX, afterY));
       } else {
@@ -63,9 +64,9 @@ int main() {
       break;
     }
     //Print menu options
-    cout << "Commands:" << endl;
+    cout << endl << "Commands:" << endl;
     cout << "0: Terminate Program" << endl;
-    cout << "1: Create new PolyLine Object" << endl;
+    cout << "1: Create new empty PolyLine Object" << endl;
     cout << "2: Print the length of all lines connecting subsequent points" << endl;
     cout << "3: Insert a new point after an existing given point" << endl;
     cout << "4: Remove a point" << endl;

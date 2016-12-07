@@ -4,7 +4,6 @@ using namespace std;
 
 #include<list>
 #include<string>
-#include<ostream>
 
 class PolyLine {
 public:

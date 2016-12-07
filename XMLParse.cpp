@@ -130,15 +130,14 @@ void XMLParse::stringCutSpaces(string & input) const {
   input = input.substr(0, lastNonSpace);
 }
 
-bool XMLParse::findTag(size_t& currentPos, size_t& i, const string& currentLine, const string& tagToFind) {
+bool XMLParse::findTag(size_t& currentPos, size_t& i, 
+  const string& currentLine, const string& tagToFind) {
   currentPos = currentLine.find(tagToFind, i);
   if (currentPos != currentLine.find('<', i)) {
     cout << "Invalid Tag Encountered" << endl;
-    //cout << tagToFind << ' ' << i << ' ' << currentPos << ' ' << currentLine.find('<', i) << endl;
     exit(1);
   }
   i = currentPos + tagToFind.length();
-  //cout << tagToFind << ' ' << i << ' ' << currentPos << ' ' << currentLine.find('<', i) << endl;
   if (currentPos != string::npos) {
     if (!verifyTag(tagToFind)) {
       cout << "Invalid Tag Encountered" << endl;
